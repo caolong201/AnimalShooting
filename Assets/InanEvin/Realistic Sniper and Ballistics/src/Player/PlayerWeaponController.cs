@@ -12,7 +12,7 @@ namespace IE.RSB
     public class PlayerWeaponController : MonoBehaviour
     {
         // Exposed properties.
-
+       
         [Header("General")]
         [SerializeField, Tooltip("Bullet properties asset this weapon uses to fire. This will be sent to SniperAndBallisticsSystem to fire a ballistics bullet based on this properties.")]
         private BulletProperties m_bulletProperties = null;
@@ -85,7 +85,7 @@ namespace IE.RSB
 
         [SerializeField, Tooltip("Clip to play when magazine is inserted during reload animation.")]
         private AudioClip m_magInsertSFX = null;
-
+        
         // Private class members.
         private int m_boltHash = Animator.StringToHash("Bolt");
         private int m_reloadHash = Animator.StringToHash("Reload");
@@ -102,7 +102,6 @@ namespace IE.RSB
         //private UIManager UIManager = null;
         public bool scopeMode = false;
         public bool ammoZeroFlg = false;
-
         private void Awake()
         {
             scopeMode = false;
@@ -154,6 +153,7 @@ namespace IE.RSB
 
         private void Update()
         {
+          
             // Controls below are only enabled if we are not in a mobile platform.
             // Else the respective methods will be called from outside, from DemoMobileControls script.
             // Of course this requires a canvas with joysticks and DemoMobileControls script running in the scene.
@@ -182,57 +182,106 @@ namespace IE.RSB
 #endif
         }
 
+
+
+        //private void Fire()
+        //{
+        //    // Cast audio
+        //    m_weaponSource.PlayOneShot(m_fireSFX);
+
+        //    if (!m_isAiming)
+        //    {
+        //        // Muzzle flash
+        //        GameObject flash = m_muzzleFlashPooler.GetPooledObject();
+        //        flash.transform.position = m_fireReference.position;
+        //        flash.transform.rotation = m_fireReference.rotation;
+        //        flash.SetActive(true);
+        //    }
+
+        //    // Decrease ammo & fire.
+        //    m_availableAmmoNow--;
+        //    SniperAndBallisticsSystem.instance.FireBallisticsBullet(m_bulletProperties, m_fireReference, m_bulletTimeBullet);
+
+        //    // Play bolt action animation.
+        //    m_animator.SetTrigger(m_boltHash);
+        //    m_cameraAnimator.SetTrigger(m_boltHash);
+
+        //    // Recoil
+        //    m_weaponMotionController.Recoil();
+        //    m_cameraMotionController.Recoil();
+
+        //    // Update ammo
+        //    UpdateAmmoText();
+
+        //}
+
+
+        //public void FireInput()
+        //{
+        //    if (!m_isReloading)
+        //    {
+        //        if (m_availableAmmoNow > 0)
+        //        {
+        //            if (Time.time > m_fireRate + m_lastFired)
+        //            {
+        //                m_lastFired = Time.time;
+        //                Fire();
+        //            }
+        //        }
+        //        else
+        //        {
+        //            // Click sound.
+        //            m_weaponSource.PlayOneShot(m_emptySFX);
+        //        }
+        //    }
+        //}
+
+
         private void Fire()
         {
-            // Cast audio
-            m_weaponSource.PlayOneShot(m_fireSFX);
+            m_weaponSource.PlayOneShot(m_fireSFX); // 🔊 PHÁT NGAY
 
+            // Flash, đạn
             if (!m_isAiming)
             {
-                // Muzzle flash
                 GameObject flash = m_muzzleFlashPooler.GetPooledObject();
-                flash.transform.position = m_fireReference.position;
-                flash.transform.rotation = m_fireReference.rotation;
+                flash.transform.SetPositionAndRotation(m_fireReference.position, m_fireReference.rotation);
                 flash.SetActive(true);
             }
 
-            // Decrease ammo & fire.
+            // Đạn bay
             m_availableAmmoNow--;
             SniperAndBallisticsSystem.instance.FireBallisticsBullet(m_bulletProperties, m_fireReference, m_bulletTimeBullet);
 
-            // Play bolt action animation.
-            m_animator.SetTrigger(m_boltHash);
-            m_cameraAnimator.SetTrigger(m_boltHash);
-
-            // Recoil
-            m_weaponMotionController.Recoil();
-            m_cameraMotionController.Recoil();
-
-            // Update ammo
+            // UI
             UpdateAmmoText();
 
+            // Giật súng/camera
+            m_weaponMotionController.Recoil();
+            m_cameraMotionController.Recoil();
         }
-
 
         public void FireInput()
         {
-            if (!m_isReloading)
+            if (!m_isReloading && m_availableAmmoNow > 0)
             {
-                if (m_availableAmmoNow > 0)
+                if (Time.time > m_fireRate + m_lastFired)
                 {
-                    if (Time.time > m_fireRate + m_lastFired)
-                    {
-                        m_lastFired = Time.time;
-                        Fire();
-                    }
-                }
-                else
-                {
-                    // Click sound.
-                    m_weaponSource.PlayOneShot(m_emptySFX);
+                    m_lastFired = Time.time;
+
+                    // 1. BẮN TRƯỚC
+                    Fire(); // đạn bắn, âm thanh, raycast
+                    m_animator.speed = 2f;
+                    // 2. Animation chạy SAU (minh họa cho hành động đã diễn ra)
+                    m_animator.SetTrigger(m_boltHash);
+                    m_cameraAnimator.SetTrigger(m_boltHash);
                 }
             }
         }
+
+
+
+
 
         public void ReloadInput()
         {
@@ -307,6 +356,7 @@ namespace IE.RSB
             shell.SetActive(true);
         }
 
+       
         private void EndReload()
         {
             m_isReloading = false;

@@ -84,7 +84,7 @@ namespace IE.RSB
 
         [Tooltip("How fast footstep sfx will be played while running?")]
         [SerializeField] private float m_footstepsRunRate = 0.3f;
-
+          
         // Private class members.
         private AudioSource m_footstepSource = null;
         private CharacterController m_cc = null;
@@ -99,6 +99,14 @@ namespace IE.RSB
         private float m_lastFootstep = 0.0f;
         private static PlayerMotionState s_motionState;
         private Vector2 m_movementInput = Vector2.zero;
+
+
+      
+
+
+
+
+
 
         void Awake()
         {

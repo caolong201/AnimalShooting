@@ -33,11 +33,15 @@ public class GameManager : MonoBehaviour
     public List<int> AnimalCount = new List<int>();
     
     private bool clearStatus= false;
+    [SerializeField] private ArrowIndicatorManager arrowManager;
+    //[SerializeField] private List<Transform> allEnemies; // Gán 4 enemy ở đây
     void Awake(){
     }
 
     void Start()
     {
+        //arrowManager.SetEnemies(allEnemies);
+
         //ステージ生成
         StageGenerate();
     }
@@ -126,6 +130,28 @@ public class GameManager : MonoBehaviour
                 newObject.GetComponent<Enemy>().DoMoveAnimal(stageData.GenerateAnimalAnimation[i]);
             }
         }
+
+        ////ll
+        //List<Transform> enemyList = new List<Transform>();
+        //foreach (Transform child in enemyParent)
+        //{
+        //    enemyList.Add(child);
+        //}
+
+        //if (arrowManager != null)
+        //{
+        //    arrowManager.SetEnemies(enemyList);
+        //}
+
+        List<Enemy> enemyList = new List<Enemy>();
+        foreach (Transform child in enemyParent)
+        {
+            Enemy enemy = child.GetComponent<Enemy>();
+            if (enemy != null) enemyList.Add(enemy);
+        }
+        arrowManager.SetEnemies(enemyList);
+
+
 
         targetAnimal = 0;
         AnimalCount = new List<int>();

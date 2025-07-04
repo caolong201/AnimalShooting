@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using IE.RSB;
+using DG.Tweening;
 
 public class TouchCameraRotation : MonoBehaviour
 {
@@ -24,11 +25,38 @@ public class TouchCameraRotation : MonoBehaviour
     // カウンタ
     private float _timer = 0f;
     private float _bulletTimer = 0f;
-    
+
+
+
+    //
+    [Header("Zoom Settings")]
+    [SerializeField] private Camera zoomCamera;
+    [SerializeField] private float defaultFOV = 60f;
+    [SerializeField] private float zoomFOV = 30f;
+    [SerializeField] private float deepZoomFOV = 15f;
+    [SerializeField] private float zoomHoldThreshold = 1f;
+    [SerializeField] private float zoomSpeed = 10f;
+    private float currentZoomVelocity = 0f;
+    private bool isZooming = false;
+    private float zoomHoldTime = 0f;
+    private bool deepZoomed = false;
+    private Tween zoomTween;
+    private bool isDeepZooming = false;
+
+    private float currentFOV;
+
     void Start()
     {
         ResetRotation();
         _timer = 1.0f;
+        //ll
+        if (zoomCamera == null) zoomCamera = Camera.main;
+
+        if (zoomCamera != null)
+        {
+            zoomCamera.fieldOfView = defaultFOV; // đảm bảo FOV ban đầu là 60
+        }
+
     }
 
     public void ResetRotation(){
@@ -67,7 +95,50 @@ public class TouchCameraRotation : MonoBehaviour
         //         _timer = 0f;
         //     }
         // }
+        UpdateZoom();
     }
+
+
+
+    //ll
+    void UpdateZoom()
+    {
+        if (zoomCamera == null) return;
+
+        if (m_weaponController.isAiming)
+        {
+            // Bắt đầu ngắm
+            zoomHoldTime += Time.deltaTime;
+
+            if (!isDeepZooming && zoomHoldTime >= 4f)
+            {
+                isDeepZooming = true;
+
+                // Zoom từ 15 → 5 mượt sau 4s
+                zoomTween?.Kill();
+                zoomTween = zoomCamera.DOFieldOfView(5f, 0.5f).SetEase(Ease.OutSine);
+            }
+        }
+        else
+        {
+            // Khi thả nút ngắm → reset
+            zoomHoldTime = 0f;
+            isDeepZooming = false;
+
+            zoomTween?.Kill();
+            zoomTween = zoomCamera.DOFieldOfView(defaultFOV, 0.3f).SetEase(Ease.OutSine);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
 
     void HandleTouchInput()
     {
@@ -131,6 +202,11 @@ public class TouchCameraRotation : MonoBehaviour
                 ScopeChange();
                 ScopeUIChange();
                 m_weaponController.scopeMode = true;
+                // Zoom ngay lập tức về 15 khi bắt đầu ngắm
+                zoomTween?.Kill();
+                zoomCamera.fieldOfView = zoomCamera.fieldOfView; // Bảo đảm không bị stuck tween
+                zoomTween = zoomCamera.DOFieldOfView(15f, 0.1f).SetEase(Ease.OutSine);
+
             }
         }
 

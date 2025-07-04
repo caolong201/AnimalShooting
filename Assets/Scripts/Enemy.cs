@@ -27,7 +27,7 @@ namespace IE.RSB
         public int moveAnimation = 0;
         private bool moveFlg = false;
         private float speed =0.2f;
-
+        public bool isDead => m_isDead;
         void Awake()
         {
             m_gameManager = GameObject.Find("GameManager").gameObject.GetComponent<GameManager>();
@@ -45,6 +45,8 @@ namespace IE.RSB
         {
             SniperAndBallisticsSystem.EAnyHit += OnAnyHit;
         }
+
+
 
         private void OnDisable()
         {
@@ -73,6 +75,19 @@ namespace IE.RSB
                     // Some of our rigidbody parts are bullet time targets, e.g when bullet hits head or torso bullet time might be triggered.
                     // But we don't want to trigger bullet time if the enemy is already dead, so deactivate those targets.
                     BulletTimeTargetsActivation(false);
+
+
+                    // 👉 Xác định trúng đầu hay thường
+                    bool isHeadshot = point.m_hitTransform.name.ToLower().Contains("head");
+
+                    // 👉 Gọi UIManager để hiển thị hiệu ứng
+                    UIManager uiManager = FindObjectOfType<UIManager>();
+                    if (uiManager != null)
+                    {
+                        uiManager.ShowHitIndicator(isHeadshot);
+                    }
+
+
 
                     // Animator & flag.
                     //m_animator.enabled = false;
