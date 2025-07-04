@@ -107,7 +107,7 @@ namespace Lean.Common
 
 			if (rigidbody != null)
 			{
-				rigidbody.velocity += (remainingDelta - newDelta)  / Time.fixedDeltaTime;
+				rigidbody.linearVelocity += (remainingDelta - newDelta)  / Time.fixedDeltaTime;
 			}
 
 			remainingDelta = newDelta;
@@ -122,7 +122,7 @@ namespace Lean.Common
 
 				if (rigidbody != null)
 				{
-					rigidbody.velocity = Vector2.zero;
+					rigidbody.linearVelocity = Vector2.zero;
 				}
 			}
 		}

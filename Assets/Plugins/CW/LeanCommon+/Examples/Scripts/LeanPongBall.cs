@@ -48,7 +48,7 @@ namespace Lean.Common
 			speed += acceleration * Time.deltaTime;
 
 			// Reset velocity magnitude to new speed
-			cachedBody.velocity = cachedBody.velocity.normalized * speed;
+			cachedBody.linearVelocity = cachedBody.linearVelocity.normalized * speed;
 		}
 
 		private void ResetPositionAndVelocity()
@@ -60,14 +60,14 @@ namespace Lean.Common
 			speed = startSpeed;
 
 			// If moving right, reset velocity to the left
-			if (cachedBody.velocity.x > 0.0f)
+			if (cachedBody.linearVelocity.x > 0.0f)
 			{
-				cachedBody.velocity = new Vector2(-speed, Random.Range(-spread, spread));
+				cachedBody.linearVelocity = new Vector2(-speed, Random.Range(-spread, spread));
 			}
 			// If moving left, reset velocity to the right
 			else
 			{
-				cachedBody.velocity = new Vector2(speed, Random.Range(-spread, spread));
+				cachedBody.linearVelocity = new Vector2(speed, Random.Range(-spread, spread));
 			}
 		}
 	}

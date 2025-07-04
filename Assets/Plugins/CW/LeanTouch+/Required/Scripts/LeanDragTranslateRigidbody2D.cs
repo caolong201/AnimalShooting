@@ -79,7 +79,7 @@ namespace Lean.Touch
 				var factor = CwHelper.DampenFactor(damping, Time.fixedDeltaTime);
 
 				// Apply the velocity
-				cachedRigidbody.velocity = velocity * factor;
+				cachedRigidbody.linearVelocity = velocity * factor;
 			}
 		}
 

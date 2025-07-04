@@ -63,7 +63,7 @@ namespace Lean.Common
 				velocity = Vector3.Lerp(velocity, targetVelocity, factor);
 				velocity = Vector3.MoveTowards(velocity, targetVelocity, linear * Time.fixedDeltaTime);
 
-				cachedRigidbody.velocity = velocity;
+				cachedRigidbody.linearVelocity = velocity;
 
 				/*
 				if (Rotation == true && direction != Vector3.zero)
