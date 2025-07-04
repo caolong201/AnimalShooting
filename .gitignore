@@ -98,7 +98,7 @@ InitTestScene*.unity*
 # Auto-generated scenes by play mode tests
 /[Aa]ssets/[Ii]nit[Tt]est[Ss]cene*.unity*
 .DS_Store
-/Assets/Scenes/InGame.unity
+#/Assets/Scenes/InGame.unity
 
 Assets/Toon Fantasy Nature/Scenes/Demo_Scene_Lake_2.unity
 Assets/Toon Fantasy Nature/Scenes/Demo_Scene_Lake_2.unity.meta
